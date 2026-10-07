@@ -90,3 +90,35 @@ h1{
 
 .footer{margin-top:14px;color:var(--muted);font-size:0.85rem}
 .footer a{color:inherit;text-decoration:underline;opacity:0.9}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.status.error {
+    color: #f87171;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 16px;
+    }
+
+    .card {
+        padding: 22px 16px;
+    }
+
+    .joke {
+        font-size: 1rem;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
