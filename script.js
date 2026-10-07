@@ -1,78 +1,107 @@
-// script.js - Random Joke Generator using icanhazdadjoke API
-const jokeText = document.getElementById('joke-text');
-const newJokeBtn = document.getElementById('new-joke');
-const shareBtn = document.getElementById('share-joke');
-const statusEl = document.getElementById('status');
+const jokeText = document.getElementById("joke-text");
+const newJokeBtn = document.getElementById("new-joke");
+const shareBtn = document.getElementById("share-joke");
+const statusEl = document.getElementById("status");
 
-const API_URL = 'https://icanhazdadjoke.com/';
+const API_URL = "https://icanhazdadjoke.com/";
+
+let currentJoke = "";
 
 async function fetchJoke() {
-  setLoading(true);
-  statusEl.textContent = 'Loading joke...';
-  try {
-    const res = await fetch(API_URL, {
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': 'Random-Joke-Generator (https://github.com/ShekharSonawane/RandomJokeGenerator)'
-      }
-    });
+    setLoading(true);
+    showStatus("Loading joke...");
 
-    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    try {
+        const response = await fetch(API_URL, {
+            headers: {
+                Accept: "application/json"
+            }
+        });
 
-    const data = await res.json();
-    showJoke(data.joke);
-    statusEl.textContent = '';
-  } catch (err) {
-    console.error(err);
-    showJoke('Oops — could not fetch a joke. Try again.');
-    statusEl.textContent = 'Failed to load. You can try again.';
-  } finally {
-    setLoading(false);
-  }
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.joke) {
+            throw new Error("No joke received.");
+        }
+
+        currentJoke = data.joke;
+        showJoke(currentJoke);
+        showStatus("");
+
+    } catch (error) {
+        console.error("Error fetching joke:", error);
+
+        showJoke("Oops! Could not fetch a joke. Please try again.");
+        showStatus("Failed to load joke.", true);
+
+    } finally {
+        setLoading(false);
+    }
 }
 
-function showJoke(text) {
-  jokeText.textContent = text;
-  // store current joke on the button dataset for sharing
-  shareBtn.dataset.joke = text;
+function showJoke(joke) {
+    jokeText.textContent = joke;
+}
+
+function showStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle("error", isError);
 }
 
 function setLoading(isLoading) {
-  newJokeBtn.disabled = isLoading;
-  shareBtn.disabled = isLoading;
-  if (isLoading) {
-    newJokeBtn.textContent = 'Loading...';
-  } else {
-    newJokeBtn.textContent = 'New Joke';
-  }
+    newJokeBtn.disabled = isLoading;
+    shareBtn.disabled = isLoading;
+
+    newJokeBtn.textContent = isLoading
+        ? "Loading..."
+        : "New Joke";
 }
 
 async function shareJoke() {
-  const joke = shareBtn.dataset.joke || jokeText.textContent;
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'Joke for you',
-        text: joke
-      });
-    } catch (err) {
-      // user cancelled or share failed
-      console.log('Share canceled or failed', err);
+    if (!currentJoke) {
+        showStatus("Get a joke first.", true);
+        return;
     }
-  } else {
-    // fallback: copy to clipboard
-    try {
-      await navigator.clipboard.writeText(joke);
-      statusEl.textContent = 'Joke copied to clipboard!';
-      setTimeout(()=> statusEl.textContent = '', 2000);
-    } catch (err) {
-      statusEl.textContent = 'Sharing not supported on this device.';
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: "Random Joke",
+                text: currentJoke
+            });
+
+            showStatus("Joke shared!");
+
+        } catch (error) {
+            // User cancelled sharing
+            console.log("Share cancelled.");
+        }
+
+    } else {
+        try {
+            await navigator.clipboard.writeText(currentJoke);
+
+            showStatus("Joke copied to clipboard!");
+
+            setTimeout(() => {
+                showStatus("");
+            }, 2000);
+
+        } catch (error) {
+            showStatus(
+                "Sharing and clipboard are not supported.",
+                true
+            );
+        }
     }
-  }
 }
 
-newJokeBtn.addEventListener('click', fetchJoke);
-shareBtn.addEventListener('click', shareJoke);
+newJokeBtn.addEventListener("click", fetchJoke);
+shareBtn.addEventListener("click", shareJoke);
 
-// Fetch an initial joke on load
+// Load a joke when the page opens
 fetchJoke();
