@@ -1,25 +1,52 @@
-😂 Random Joke Generator
+# Random Joke Generator
 
-Bringing a smile with every click!
-A fun and simple web app that shows random jokes each time you click “New Joke”.
-Built to practice HTML, CSS, and JavaScript while learning about API integration in a light-hearted way.
+A simple and interactive web application that generates random jokes using the icanhazdadjoke API.
 
-✨ Features
-🎯 Displays a new random joke on every click
-💬 Option to share jokes with friends
-🎨 Clean and minimal design
-⚡ Deployed on GitHub Pages for instant access
+---
 
-🛠️ Built With
-HTML
-CSS
-JavaScript
+## 🔗 Live Demo
 
-🚀 Live Demo
-🔗 ShekharSonawane.github.io/RandomJokeGenerator 
+👉 [Open Random Joke Generator](https://shekharsonawane16.github.io/RandomJokeGenerator)
 
-📂 Repository
-📘 github.com/ShekharSonawane/RandomJokeGenerator
+---
 
-💡 Inspiration
-Because sometimes, coding can be funny too 😄
+## ✨ Features
+
+- Generate random jokes
+- Fetch jokes from an external API
+- Loading state while fetching jokes
+- Error handling
+- Share jokes using the Web Share API
+- Copy joke to clipboard on unsupported devices
+- Responsive design
+- Clean and simple user interface
+- Automatic joke loading when the application starts
+
+---
+
+## 🛠️ Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript
+- Fetch API
+- icanhazdadjoke API
+- Web Share API
+- Clipboard API
+
+---
+
+## 🔄 How It Works
+
+```text
+User opens the application
+        ↓
+Application requests a joke
+        ↓
+icanhazdadjoke API
+        ↓
+JSON response received
+        ↓
+Joke displayed on the screen
+        ↓
+User can generate or share another joke
